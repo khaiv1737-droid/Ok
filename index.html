@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đừng Bấm Vào Đây!</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;background:#050505;color:#f22;
+  font-family:monospace;text-align:center;
+  min-height:100vh;display:grid;place-items:center;
+}
+main{padding:20px}
+h1{font-size:clamp(30px,8vw,60px);
+text-shadow:0 0 20px red;animation:flicker 1s infinite}
+p{color:#ddd;line-height:1.8}
+button{padding:15px 22px;margin:8px;
+background:#c00;color:white;border:1px solid red;
+border-radius:6px;font-weight:bold;font-size:15px}
+#scare{display:none;position:fixed;inset:0;
+background:black;align-items:center;justify-content:center;
+flex-direction:column}
+#scare img{width:100%;height:85vh;object-fit:contain}
+@keyframes flicker{50%{opacity:.4}}
+</style>
+</head>
+<body>
+<main>
+  <h1>ĐỪNG BẤM VÀO ĐÂY!!!</h1>
+  <p>Bạn có chắc muốn tiếp tục không?<br>
+  Có một thứ đang chờ bạn...</p>
+  <button onclick="boo()">TÔI KHÔNG SỢ!</button>
+</main>
+
+<div id="scare">
+  <img src="wide_dark_horror_themed_digital_composite_scene_li.png"
+       alt="Hình ảnh kinh dị">
+  <button onclick="closeScare()">ĐÓNG</button>
+</div>
+
+<script>
+function boo(){
+  document.getElementById("scare").style.display="flex";
+
+  // Âm thanh tổng hợp ngắn, chỉ phát sau khi nhấn.
+  try{
+    const c = new AudioContext();
+    const o = c.createOscillator();
+    const g = c.createGain();
+    o.type = "sawtooth";
+    o.frequency.setValueAtTime(750,c.currentTime);
+    o.frequency.exponentialRampToValueAtTime(100,c.currentTime+0.6);
+    g.gain.setValueAtTime(0.08,c.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.6);
+    o.connect(g);g.connect(c.destination);
+    o.start();o.stop(c.currentTime+0.6);
+    o.onended=()=>c.close();
+  }catch(e){}
+}
+function closeScare(){
+  document.getElementById("scare").style.display="none";
+}
+</script>
+</body>
+</html>
